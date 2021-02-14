@@ -26,5 +26,21 @@ namespace SimpleRegistry.Api.Controllers
 
             return Ok(registry);
         }
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] Register request)
+        {
+            // Get the registry 
+            var registry = _registry.FirstOrDefault(r => r.Id == request.RegistryId);
+
+            if (registry == null)
+            {
+                return NotFound();
+            }
+
+            registry.BuyerUserId = request.BuyerUserId;
+
+            return Ok();
+        }
     }
 }

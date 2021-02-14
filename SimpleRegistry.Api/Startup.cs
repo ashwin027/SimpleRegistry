@@ -36,9 +36,10 @@ namespace SimpleRegistry.Api
             {
                 new Registry()
                 {
+                    Id = 1,
                     UserId = 1,
-                    ProductName = "Duff beer",
-                    RegId = 1
+                    ProductId = 1,
+                    ProductName = "Duff beer"
                 }
             });
         }

@@ -7,8 +7,9 @@ namespace SimpleRegistry.Api
 {
     public class Registry
     {
-        public int RegId { get; set; }
+        public int Id { get; set; }
         public int UserId { get; set; }
+        public int ProductId { get; set; }
         public string ProductName { get; set; }
         public int? BuyerUserId { get; set; }
     }
