@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-app
+  namespace: simpleregistry
+  labels:
+    app: registry-app
+spec:
+  selector:
+    matchLabels:
+      app: registry-app
+  template:
+    metadata:
+      labels:
+        app: registry-app
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "RegistryApp"
+        dapr.io/app-port: "5003"
+    spec:
+      containers:
+      - name: registry-app
+        image: ashwin027/simpleregistryapi:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5003

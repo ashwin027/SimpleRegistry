@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-app
+  namespace: simpleregistry
+  labels:
+    app: user-app
+spec:
+  selector:
+    matchLabels:
+      app: user-app
+  template:
+    metadata:
+      labels:
+        app: user-app
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "UserApp"
+        dapr.io/app-port: "5001"
+    spec:
+      containers:
+      - name: user-app
+        image: ashwin027/userapi:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5001
