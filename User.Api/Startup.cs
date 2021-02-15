@@ -36,7 +36,7 @@ namespace User.Api
                 // Use method name as operationId
                 c.CustomOperationIds(apiDesc => apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null);
             });
-            var users = new List<User>()
+            services.AddSingleton(new List<User>()
             {
                 new User()
                 {
@@ -58,8 +58,7 @@ namespace User.Api
                     Id = 4,
                     Name = "Lisa Simpson"
                 }
-            };
-            services.AddSingleton(users);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

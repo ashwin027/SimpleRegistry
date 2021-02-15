@@ -24,8 +24,15 @@ namespace SimpleRegistry.Api.Controllers
         [HttpGet("{userId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Registry> GetRegistryByUser([FromRoute] int userId)
+        public async Task<ActionResult<Registry>> GetRegistryByUser([FromRoute] int userId)
         {
+            // Verify if the buyer user id is valid
+            var buyer = await _userClient.GetUserDetailsAsync(userId);
+            if (buyer == null)
+            {
+                return NotFound("User not found.");
+            }
+
             var registry = _registry.FirstOrDefault(u => u.UserId == userId);
 
             if (registry == null)

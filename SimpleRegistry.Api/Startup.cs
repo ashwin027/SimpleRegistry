@@ -46,7 +46,7 @@ namespace SimpleRegistry.Api
             services.AddHttpClient<IUserClient, UserClient>(
                 (provider, client) =>
                 {
-                    client.BaseAddress = new Uri(Configuration.GetValue("WeatherServiceBaseAddress", "http://localhost:5001/"));
+                    client.BaseAddress = new Uri(Configuration.GetValue("UserServiceBaseAddress", "http://localhost:5001/"));
                 });
         }
 
