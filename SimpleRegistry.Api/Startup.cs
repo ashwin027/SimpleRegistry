@@ -26,7 +26,7 @@ namespace SimpleRegistry.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddDapr();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleRegistry.Api", Version = "v1" });
