@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleRegistry.Api", "SimpleRegistry.Api\SimpleRegistry.Api.csproj", "{5AC3A7F2-62FB-4F8D-9A7C-D9F99D286948}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleRegistry.Api", "SimpleRegistry.Api\SimpleRegistry.Api.csproj", "{5AC3A7F2-62FB-4F8D-9A7C-D9F99D286948}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Api", "User.Api\User.Api.csproj", "{5AF663A5-AC91-4563-9D82-863D7966A1C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.Api", "User.Api\User.Api.csproj", "{5AF663A5-AC91-4563-9D82-863D7966A1C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

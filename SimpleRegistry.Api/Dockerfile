@@ -6,10 +6,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["SimpleRegistry.Api/SimpleRegistry.Api.csproj", "SimpleRegistry.Api/"]
-RUN dotnet restore "SimpleRegistry.Api/SimpleRegistry.Api.csproj"
+COPY ["SimpleRegistry.Api.csproj", ""]
+RUN dotnet restore "SimpleRegistry.Api.csproj"
 COPY . .
-WORKDIR "/src/SimpleRegistry.Api"
+WORKDIR "/src/."
 RUN dotnet build "SimpleRegistry.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
