@@ -42,6 +42,12 @@ namespace SimpleRegistry.Api
                     ProductName = "Duff beer"
                 }
             });
+
+            services.AddHttpClient<IUserClient, UserClient>(
+                (provider, client) =>
+                {
+                    client.BaseAddress = new Uri(Configuration.GetValue("WeatherServiceBaseAddress", "http://localhost:5001/"));
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

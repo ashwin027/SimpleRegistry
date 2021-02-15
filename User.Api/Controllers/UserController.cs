@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace User.Api.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     public class UserController: ControllerBase
     {
@@ -16,7 +18,9 @@ namespace User.Api.Controllers
         }
 
         [HttpGet("{userId:int}")]
-        public IActionResult GetUserDetails([FromRoute] int userId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<User> GetUserDetails([FromRoute] int userId)
         {
             var user = _users.FirstOrDefault(u => u.Id == userId);
 
