@@ -15,8 +15,9 @@ spec:
         app: user-app
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "UserApp"
-        dapr.io/app-port: "5001"
+        dapr.io/app-id: "userapp"
+        dapr.io/app-port: "80"
+        dapr.io/log-as-json: "true"
     spec:
       containers:
       - name: user-app
@@ -26,4 +27,22 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 5001
+        - containerPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: userapp-dapr-ingress
+  namespace: simpleregistry
+spec:
+  rules:
+  - host: user-app.internal
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: userapp-dapr
+            port:
+              number: 80
