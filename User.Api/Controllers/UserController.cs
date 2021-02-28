@@ -19,17 +19,25 @@ namespace User.Api.Controllers
 
         [HttpGet("{userId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<User> GetUserDetails([FromRoute] int userId)
         {
-            var user = _users.FirstOrDefault(u => u.Id == userId);
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var user = _users.FirstOrDefault(u => u.Id == userId);
 
-            return Ok(user);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

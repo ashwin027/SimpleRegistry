@@ -25,13 +25,8 @@ namespace SimpleRegistry.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            #region controllers
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleRegistry.Api", Version = "v1" });
-            });
-
             services.AddSingleton(new List<Registry>()
             {
                 new Registry()
@@ -41,6 +36,11 @@ namespace SimpleRegistry.Api
                     ProductId = 1,
                     ProductName = "Duff beer"
                 }
+            });
+            #endregion
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleRegistry.Api", Version = "v1" });
             });
 
             services.AddHttpClient<IUserClient, UserClient>(

@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SimpleRegistry.Api.Controllers
 {
-    
+
     [ApiController]
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class RegistryController: ControllerBase
+    public class RegistryController : ControllerBase
     {
         private List<Registry> _registry { get; set; }
         private IUserClient _userClient { get; set; }
@@ -20,51 +22,80 @@ namespace SimpleRegistry.Api.Controllers
             _userClient = userClient;
         }
 
-        
-        [HttpGet("{userId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Registry>> GetRegistryByUser([FromRoute] int userId)
-        {
-            // Verify if the buyer user id is valid
-            var buyer = await _userClient.GetUserDetailsAsync(userId);
-            if (buyer == null)
-            {
-                return NotFound("User not found.");
-            }
-
-            var registry = _registry.FirstOrDefault(u => u.UserId == userId);
-
-            if (registry == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(registry);
-        }
-
         [HttpPut("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Register([FromBody] Register request)
         {
-            // Verify if the buyer user id is valid
-            var buyer = await _userClient.GetUserDetailsAsync(request.BuyerUserId);
-            if (buyer == null)
+            try
             {
-                return NotFound("Buyer not found.");
-            }
-            // Get the registry 
-            var registry = _registry.FirstOrDefault(r => r.Id == request.RegistryId);
+                // Verify if the buyer user id is valid
+                await _userClient.GetUserDetailsAsync(request.BuyerUserId);
 
-            if (registry == null)
+                // Get the registry 
+                var registry = _registry.FirstOrDefault(r => r.Id == request.RegistryId);
+
+                if (registry == null)
+                {
+                    return NotFound();
+                }
+
+                registry.BuyerUserId = request.BuyerUserId;
+
+                return Ok();
+            }
+            catch (ApiException ex)
             {
-                return NotFound();
+                switch ((HttpStatusCode)ex.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        return NotFound("User not found.");
+                    default:
+                        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
             }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
-            registry.BuyerUserId = request.BuyerUserId;
 
-            return Ok();
+        [HttpGet("{userId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Registry>> GetRegistryByUser([FromRoute] int userId)
+        {
+            try
+            {
+                // Verify if the user id is valid
+                await _userClient.GetUserDetailsAsync(userId);
+
+                var registry = _registry.FirstOrDefault(u => u.UserId == userId);
+
+                if (registry == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(registry);
+            }
+            catch (ApiException ex)
+            {
+                switch ((HttpStatusCode)ex.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        return NotFound("User not found.");
+                    default:
+                        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

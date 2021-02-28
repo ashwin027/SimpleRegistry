@@ -33,6 +33,9 @@
               }
             }
           },
+          "500": {
+            "description": "Server Error"
+          },
           "404": {
             "description": "Not Found",
             "content": {
