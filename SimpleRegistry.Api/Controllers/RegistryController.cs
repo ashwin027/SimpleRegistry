@@ -25,12 +25,47 @@ namespace SimpleRegistry.Api.Controllers
             _daprClient = daprClient;
         }
 
+        [HttpPut("register")]
+        public async Task<IActionResult> Register([FromBody] Register request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _daprClient.InvokeMethodAsync<User>(HttpMethod.Get, UserAppId, $"/api/user/{request.BuyerUserId}", cancellationToken);
+
+                // Get the registry 
+                var registry = _registry.FirstOrDefault(r => r.Id == request.RegistryId);
+
+                if (registry == null)
+                {
+                    return NotFound();
+                }
+
+                registry.BuyerUserId = request.BuyerUserId;
+
+                return Ok();
+            }
+            catch (InvocationException ex)
+            {
+                switch (ex.Response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        return NotFound("User not found.");
+                    default:
+                        return StatusCode(500, "Internal server error");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetRegistryByUser([FromRoute] int userId, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await _daprClient.InvokeMethodAsync<User>(HttpMethod.Get, UserAppId, $"/api/user/{userId}", cancellationToken);
+                await _daprClient.InvokeMethodAsync<User>(HttpMethod.Get, UserAppId, $"/api/user/{userId}", cancellationToken);
                 var registry = _registry.FirstOrDefault(u => u.UserId == userId);
 
                 if (registry == null)
@@ -56,20 +91,6 @@ namespace SimpleRegistry.Api.Controllers
             }
         }
 
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] Register request)
-        {
-            // Get the registry 
-            var registry = _registry.FirstOrDefault(r => r.Id == request.RegistryId);
 
-            if (registry == null)
-            {
-                return NotFound();
-            }
-
-            registry.BuyerUserId = request.BuyerUserId;
-
-            return Ok();
-        }
     }
 }
