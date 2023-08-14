@@ -40,7 +40,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value={{date 'YYYYMMDD'}}-{{ github.run_number }}
+            type=raw,value={{date 'YYYYMMDD'}}-${{ github.run_number }}
 
       - name: Build and push Docker image
         id: build-and-push
